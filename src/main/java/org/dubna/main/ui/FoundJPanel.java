@@ -19,23 +19,29 @@ public class FoundJPanel extends JPanel {
         if (labels.isEmpty()) {
             return;
         }
-        this.setLayout(new GridLayout(i + 1, 3));
-        labels.forEach(labelGroup -> labelGroup.forEach(l -> {
-            this.add(l);
-            Checkbox checkboxDelete = new Checkbox("Удалить файл");
-            checkboxDelete.addItemListener(e -> {
-                if (e.getStateChange() == ItemEvent.DESELECTED) {
-                    _2Delete.remove(l.getText());
-                }
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    _2Delete.put(l.getText(), Boolean.FALSE);
-                }
+        this.setLayout(new GridLayout(i + labels.size() + 1, 3));
+        labels.forEach(labelGroup -> {
+            this.add(new JLabel("Группа файлов с именем: "));
+            this.add(new JLabel(labelGroup.get(0).getText().substring(labelGroup.get(0).getText().lastIndexOf("\\") + 1)));
+            this.add(new JLabel(""));
+            labelGroup.forEach(l -> {
+                this.add(l);
+                Checkbox checkboxDelete = new Checkbox("Удалить файл");
+                checkboxDelete.addItemListener(e -> {
+                    if (e.getStateChange() == ItemEvent.DESELECTED) {
+                        _2Delete.remove(l.getText());
+                    }
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        _2Delete.put(l.getText(), Boolean.FALSE);
+                    }
+                });
+                this.add(checkboxDelete);
+                JButton buttonShow = new JButton("Просмотр файла");
+                buttonShow.setSize(new Dimension(10, 7));
+                buttonShow.addActionListener(e -> showFile(l.getText()));
+                this.add(buttonShow);
             });
-            this.add(checkboxDelete);
-            JButton buttonShow = new JButton("Просмотр файла");
-            buttonShow.addActionListener(e -> showFile(l.getText()));
-            this.add(buttonShow);
-        }));
+        });
         final JButton deleteButton = new JButton("Удалить");
         this.add(deleteButton);
         deleteButton.addActionListener(e -> deleteFiles());

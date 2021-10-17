@@ -1,7 +1,5 @@
 package org.dubna.main.utils;
 
-import com.sun.istack.internal.NotNull;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
