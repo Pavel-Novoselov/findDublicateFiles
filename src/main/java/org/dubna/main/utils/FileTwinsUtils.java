@@ -83,8 +83,8 @@ public class FileTwinsUtils {
             return false;
         }
         File file = new File(fileName);
-//TODO real deleting!        return file.delete();
-        return file.exists();
+//        return file.exists();
+        return file.delete();
     }
 
     public static void showFile(String name){
@@ -96,9 +96,9 @@ public class FileTwinsUtils {
         if (os.toLowerCase().contains("win")){
             processBuilder = new ProcessBuilder("cmd.exe", "/c", name);
         } else if(os.toLowerCase().contains("nix") || os.contains("nux")) {
-            processBuilder = new ProcessBuilder("/bin/bash", "-c", name);
-        } else if (os.toLowerCase().contains("mac")){
-            processBuilder = new ProcessBuilder("/bin/bash", "-c", name);
+            processBuilder = new ProcessBuilder("gedit", "-c", name); // gedit fname  imagereader
+//        } else if (os.toLowerCase().contains("mac")){
+//            processBuilder = new ProcessBuilder("/bin/bash", "-c", name);
         } else {
             return;
         }

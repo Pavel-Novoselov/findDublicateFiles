@@ -5,7 +5,7 @@ import org.dubna.main.utils.FileTwinsUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,17 +15,24 @@ import static org.dubna.main.utils.FileTwinsUtils.showFile;
 public class FoundJPanel extends JPanel {
     private final Map<String, Boolean> _2Delete = new HashMap<>();
 
-    public FoundJPanel(int i, List<List<JLabel>> labels) {
+    public FoundJPanel(JFrame found, List<List<JLabel>> labels, int offset, List<List<JLabel>> fullLabels) {
         if (labels.isEmpty()) {
             return;
         }
-        this.setLayout(new GridLayout(i + labels.size() + 1, 3));
+        this.setLayout(new BorderLayout());
+        int i = labels.stream().mapToInt(Collection::size).sum();
+
+        JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayout(i + labels.size(), 3));
         labels.forEach(labelGroup -> {
-            this.add(new JLabel("Группа файлов с именем: "));
-            this.add(new JLabel(labelGroup.get(0).getText().substring(labelGroup.get(0).getText().lastIndexOf("\\") + 1)));
-            this.add(new JLabel(""));
+            panel1.add(new JLabel("Группа файлов с именем: "));
+            panel1.add(new JLabel(labelGroup.get(0).getText().substring(labelGroup.get(0).getText().lastIndexOf("\\") + 1)));
+            panel1.add(new JLabel(""));
             labelGroup.forEach(l -> {
-                this.add(l);
+                if (l.getText().length() > 73){
+                    l.setText(l.getText().substring(0, 25) + "..." + l.getText().substring(l.getText().length() - 45));
+                }
+                panel1.add(l);
                 Checkbox checkboxDelete = new Checkbox("Удалить файл");
                 checkboxDelete.addItemListener(e -> {
                     if (e.getStateChange() == ItemEvent.DESELECTED) {
@@ -35,20 +42,33 @@ public class FoundJPanel extends JPanel {
                         _2Delete.put(l.getText(), Boolean.FALSE);
                     }
                 });
-                this.add(checkboxDelete);
+                panel1.add(checkboxDelete);
                 JButton buttonShow = new JButton("Просмотр файла");
                 buttonShow.setSize(new Dimension(10, 7));
                 buttonShow.addActionListener(e -> showFile(l.getText()));
-                this.add(buttonShow);
+                panel1.add(buttonShow);
             });
         });
+        this.add(panel1, BorderLayout.NORTH);
+
+        JPanel panel2 = new JPanel();
         final JButton deleteButton = new JButton("Удалить");
-        this.add(deleteButton);
+        panel2.add(deleteButton);
         deleteButton.addActionListener(e -> deleteFiles());
+
+        final JButton nextButton = new JButton("Еще результаты");
+        panel2.add(nextButton);
+        nextButton.addActionListener(e -> nextChunkView(found, offset, fullLabels));
+        this.add(panel2, BorderLayout.SOUTH);
         this.repaint();
     }
 
     private void deleteFiles() {
+        if (_2Delete.isEmpty()) {
+            JOptionPane.showMessageDialog(FoundJPanel.this,
+                    "Выберите файлы для удаления!");
+            return;
+        }
         _2Delete.forEach((name, result) -> _2Delete.put(name, FileTwinsUtils.deleteFiles(name)));
         JFrame deleted = new DeletedInfoJFrame();
         JPanel deletedPanel = new DeletedInfoJPanel(_2Delete);
@@ -57,5 +77,9 @@ public class FoundJPanel extends JPanel {
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         deleted.getContentPane().add(jScrollPane);
         deleted.setVisible(true);
+    }
+
+    private void nextChunkView(JFrame found, int offset, List<List<JLabel>> listListFull){
+        TwinJPanel.resultView(listListFull, found, offset);
     }
 }

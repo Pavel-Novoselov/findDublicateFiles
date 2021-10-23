@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class TwinJPanel extends JPanel {
+    public static final int CHANK_SIZE = 7;
 
     public TwinJPanel() {
         final JPanel panel = new JPanel();
@@ -30,15 +31,12 @@ public class TwinJPanel extends JPanel {
         final JButton button = new JButton("Искать");
         this.add(button);
 
-        button1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                fileChooser.setDialogTitle("Выбор директории");
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-                int result = fileChooser.showOpenDialog(TwinJPanel.this);
-                if (result == JFileChooser.APPROVE_OPTION ){
-                    textField1.setText(fileChooser.getSelectedFile().getAbsolutePath());
-                }
+        button1.addActionListener(e -> {
+            fileChooser.setDialogTitle("Выбор директории");
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int result = fileChooser.showOpenDialog(TwinJPanel.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                textField1.setText(fileChooser.getSelectedFile().getAbsolutePath());
             }
         });
 
@@ -46,7 +44,7 @@ public class TwinJPanel extends JPanel {
             fileChooser.setDialogTitle("Выбор директории");
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             int result = fileChooser.showOpenDialog(TwinJPanel.this);
-            if (result == JFileChooser.APPROVE_OPTION ){
+            if (result == JFileChooser.APPROVE_OPTION) {
                 textField2.setText(fileChooser.getSelectedFile().getAbsolutePath());
             }
         });
@@ -55,9 +53,9 @@ public class TwinJPanel extends JPanel {
     }
 
     private void onClick(String root1, String root2) {
-        if (root1 == null || root2 == null || root1.isEmpty() || root2.isEmpty()){
+        if (root1 == null || root2 == null || root1.isEmpty() || root2.isEmpty()) {
             JOptionPane.showMessageDialog(TwinJPanel.this,
-                   "Выберите папки для сравнения файлов!");
+                    "Выберите папки для сравнения файлов!");
             return;
         }
         final List<List<String>> result = new ArrayList<>();
@@ -79,18 +77,22 @@ public class TwinJPanel extends JPanel {
             });
             labels.add(groupeTwinsLabels);
         }
-        if (labels.isEmpty()){
+        if (labels.isEmpty()) {
             JOptionPane.showMessageDialog(TwinJPanel.this,
                     "Одинаковых файлов не найдено");
             return;
         }
-        resultView(labels);
+        resultView(labels, null, 0);
     }
 
-    private void resultView(List<List<JLabel>> labels) {
+    public static void resultView(List<List<JLabel>> labelListFull, JFrame previouseFrame, int offset) {
+        if (previouseFrame != null){
+            previouseFrame.dispose();
+        }
+        int nextChunkStart = offset + CHANK_SIZE;
+        List<List<JLabel>> labelListForView = labelListFull.subList(offset, nextChunkStart);
         JFrame found = new FoundJFrame();
-        int i = labels.stream().mapToInt(Collection::size).sum();
-        JPanel foundPanel = new FoundJPanel(i, labels);
+        JPanel foundPanel = new FoundJPanel(found, labelListForView, nextChunkStart, labelListFull);
         JScrollPane jScrollPane = new JScrollPane(foundPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
