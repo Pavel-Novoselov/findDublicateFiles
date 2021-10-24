@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,9 @@ public class FileTwinsUtils {
         this.root1 = new File(root1);
         this.root2 = new File(root2);
         fileList1 = searchAllFiles(this.root1, null);
-        logger.info("found " + fileList1.size() + "files in folder " + root1 + " and its subfolders");
+        logger.info("found " + fileList1.size() + " files in folder " + root1 + " and its subfolders");
         fileList2 = searchAllFiles(this.root2, null);
-        logger.info("found " + fileList2.size() + "files in folder " + root2 + " and its subfolders");
+        logger.info("found " + fileList2.size() + " files in folder " + root2 + " and its subfolders");
     }
 
     @Nonnull
@@ -75,6 +76,7 @@ public class FileTwinsUtils {
                 second.removeAll(tempList);
             }
         }
+        logger.info("found " + result.size() + " groupe(s) of dublicates include " + result.values().stream().mapToInt(Collection::size).sum() + " files");
         return result;
     }
 
@@ -83,7 +85,7 @@ public class FileTwinsUtils {
             return false;
         }
         File file = new File(fileName);
-//        return file.exists();
+//        return file.exists(); //for debug
         return file.delete();
     }
 
@@ -107,6 +109,14 @@ public class FileTwinsUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<CompareFile> getFileList1() {
+        return fileList1;
+    }
+
+    public List<CompareFile> getFileList2() {
+        return fileList2;
     }
 
     public static class CompareFile {
