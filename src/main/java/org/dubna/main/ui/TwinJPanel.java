@@ -90,13 +90,22 @@ public class TwinJPanel extends JPanel {
             previouseFrame.dispose();
         }
         int nextChunkStart = offset + CHANK_SIZE;
-        List<List<JLabel>> labelListForView = labelListFull.subList(offset, nextChunkStart);
-        JFrame found = new FoundJFrame();
-        JPanel foundPanel = new FoundJPanel(found, labelListForView, nextChunkStart, labelListFull);
-        JScrollPane jScrollPane = new JScrollPane(foundPanel,
+        if (nextChunkStart > labelListFull.size()){
+            nextChunkStart = labelListFull.size();
+        }
+        final List<List<JLabel>> labelListForView = labelListFull.subList(offset, nextChunkStart);
+        if (labelListForView.isEmpty()){
+            JOptionPane.showMessageDialog(new JPanel(),
+                    "Не найдено больше файлов!");
+            return;
+        }
+        final JFrame found = new FoundJFrame();
+        final JPanel foundPanel = new FoundJPanel(found, labelListForView, nextChunkStart, labelListFull);
+        final JScrollPane jScrollPane = new JScrollPane(foundPanel,
                 JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                 JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         found.getContentPane().add(jScrollPane);
+        found.pack();
         found.setVisible(true);
     }
 
