@@ -9,16 +9,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
-public class FileTwinsUtils {
+public final class FileTwinsUtils {
     private static final Logger logger = Logger.getLogger("logger");
     private final File root1;// = new File("C:\\Users\\pavel.novoselov");
     private final File root2;
     private final List<CompareFile> fileList1;
     private final List<CompareFile> fileList2;
 
-    public FileTwinsUtils(String root1, String root2) {
+    public FileTwinsUtils(final String root1, final String root2) {
         this.root1 = new File(root1);
         this.root2 = new File(root2);
         fileList1 = searchAllFiles(this.root1, null);
@@ -80,33 +81,33 @@ public class FileTwinsUtils {
         return result;
     }
 
-    public static boolean deleteFiles(String fileName){
+    public static boolean deleteFiles(final String fileName){
         if(fileName == null || fileName.isEmpty()){
             return false;
         }
-        File file = new File(fileName);
+        final File file = new File(fileName);
 //        return file.exists(); //for debug
         return file.delete();
     }
 
-    public static void showFile(String name){
+    public static void showFile(final String name){
         if (name == null || name.isEmpty()){
             return;
         }
         ProcessBuilder processBuilder;
-        String os = System.getProperty("os.name");
+        final String os = System.getProperty("os.name");
         if (os.toLowerCase().contains("win")){
             processBuilder = new ProcessBuilder("cmd.exe", "/c", name);
-        } else if(os.toLowerCase().contains("nix") || os.contains("nux")) {
-            processBuilder = new ProcessBuilder("gedit", "-c", name); // gedit fname  imagereader
-//        } else if (os.toLowerCase().contains("mac")){
-//            processBuilder = new ProcessBuilder("/bin/bash", "-c", name);
+        } else if (os.toLowerCase().contains("nix") || os.contains("nux")) {
+            processBuilder = new ProcessBuilder("/bin/bash", "-c", "xdg-open", name);
+        } else if (os.toLowerCase().contains("mac")){
+            processBuilder = new ProcessBuilder("/bin/bash", "-c", "open", name);
         } else {
             return;
         }
         try {
             final Process exec = processBuilder.start();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
@@ -119,15 +120,15 @@ public class FileTwinsUtils {
         return fileList2;
     }
 
-    public static class CompareFile {
-        File file;
-        String name;
-        String absPath;
+    public static final class CompareFile {
+        private File file;
+        private String name;
+        private String absPath;
 
-        public CompareFile(File file, String name, String absPath) {
-            this.file = file;
-            this.name = name;
-            this.absPath = absPath;
+        public CompareFile(final File file, final String name, final String absPath) {
+            this.setFile(file);
+            this.setName(name);
+            this.setAbsPath(absPath);
         }
 
         public File getFile() {
@@ -143,19 +144,36 @@ public class FileTwinsUtils {
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (obj == null){
                 return false;
             }
             return obj instanceof CompareFile
-                    && !this.absPath.equals(((CompareFile) obj).absPath)
-                    && this.name.equals(((CompareFile) obj).name)
-                    && this.file.length() == ((CompareFile) obj).file.length();
+                   && !this.getAbsPath().equals(((CompareFile) obj).getAbsPath())
+                   && this.getName().equals(((CompareFile) obj).getName())
+                   && this.getFile().length() == ((CompareFile) obj).getFile().length();
         }
 
         @Override
         public String toString() {
-            return "full path name: " + this.absPath + "\n" + "length: " + this.file.length();
+            return "full path name: " + this.getAbsPath() + "\n" + "length: " + this.getFile().length();
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(getFile(), getName(), getAbsPath());
+        }
+
+        public void setFile(final File file) {
+            this.file = file;
+        }
+
+        public void setName(final String name) {
+            this.name = name;
+        }
+
+        public void setAbsPath(final String absPath) {
+            this.absPath = absPath;
         }
     }
 }
