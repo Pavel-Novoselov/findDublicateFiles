@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 public class SearchAndCompareDuplicateTests {
-    private final static String root1 = "C:\\tmp";
-    private final static String root2 = "C:\\tmp";
+    private static final String root1 = "C:\\tmp\\1";
+    private static final String root2 = "C:\\tmp\\1";
     private static FileTwinsUtils fileTwinsUtils;
 
     @BeforeAll
@@ -19,18 +19,18 @@ public class SearchAndCompareDuplicateTests {
 
     @Test
     public void testSearchAllFiles(){
-        List<FileTwinsUtils.CompareFile> fileList1 = fileTwinsUtils.getFileList1();
-        List<FileTwinsUtils.CompareFile> fileList2 = fileTwinsUtils.getFileList2();
-        Assertions.assertTrue(fileList1.size() > 0);
+        final List<FileTwinsUtils.CompareFile> fileList1 = fileTwinsUtils.getFileList1();
+        final List<FileTwinsUtils.CompareFile> fileList2 = fileTwinsUtils.getFileList2();
+        Assertions.assertFalse(fileList1.isEmpty());
         Assertions.assertEquals(fileList1.size(), fileList2.size());
-        Assertions.assertEquals(220, fileList1.size());
+        Assertions.assertEquals(16, fileList1.size());
     }
 
     @Test
     public void testCompare(){
-        Map<FileTwinsUtils.CompareFile, List<FileTwinsUtils.CompareFile>> resultMap = fileTwinsUtils.compareFiles();
+        final Map<FileTwinsUtils.CompareFile, List<FileTwinsUtils.CompareFile>> resultMap = fileTwinsUtils.compareFiles();
         Assertions.assertEquals(5, resultMap.size());
-        Assertions.assertEquals(9, resultMap.values().stream().mapToInt(Collection::size).sum());
+        Assertions.assertEquals(12, resultMap.values().stream().mapToInt(Collection::size).sum() + resultMap.keySet().size());
     }
 }
 

@@ -4,15 +4,13 @@ import org.dubna.main.utils.FileTwinsUtils;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class TwinJPanel extends JPanel {
+public final class TwinJPanel extends JPanel {
     public static final int CHANK_SIZE = 7;
+    private static final long serialVersionUID = 8933121962595768028L;
 
     public TwinJPanel() {
         final JPanel panel = new JPanel();
@@ -26,7 +24,7 @@ public class TwinJPanel extends JPanel {
         panel.add(textField2);
         panel.add(button2);
         this.add(panel);
-        JFileChooser fileChooser = new JFileChooser();
+        final JFileChooser fileChooser = new JFileChooser();
 
         final JButton button = new JButton("Искать");
         this.add(button);
@@ -34,7 +32,7 @@ public class TwinJPanel extends JPanel {
         button1.addActionListener(e -> {
             fileChooser.setDialogTitle("Выбор директории");
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int result = fileChooser.showOpenDialog(TwinJPanel.this);
+            final int result = fileChooser.showOpenDialog(TwinJPanel.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 textField1.setText(fileChooser.getSelectedFile().getAbsolutePath());
             }
@@ -43,7 +41,7 @@ public class TwinJPanel extends JPanel {
         button2.addActionListener(e -> {
             fileChooser.setDialogTitle("Выбор директории");
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int result = fileChooser.showOpenDialog(TwinJPanel.this);
+            final int result = fileChooser.showOpenDialog(TwinJPanel.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 textField2.setText(fileChooser.getSelectedFile().getAbsolutePath());
             }
@@ -52,7 +50,7 @@ public class TwinJPanel extends JPanel {
         button.addActionListener(e -> onClick(textField1.getText(), textField2.getText()));
     }
 
-    private void onClick(String root1, String root2) {
+    private void onClick(final String root1, final String root2) {
         if (root1 == null || root2 == null || root1.isEmpty() || root2.isEmpty()) {
             JOptionPane.showMessageDialog(TwinJPanel.this,
                     "Выберите папки для сравнения файлов!");
@@ -60,7 +58,7 @@ public class TwinJPanel extends JPanel {
         }
         final List<List<String>> result = new ArrayList<>();
         final FileTwinsUtils fileTwinsUtils = new FileTwinsUtils(root1, root2);
-        Map<FileTwinsUtils.CompareFile, List<FileTwinsUtils.CompareFile>> resultMap = fileTwinsUtils.compareFiles();
+        final Map<FileTwinsUtils.CompareFile, List<FileTwinsUtils.CompareFile>> resultMap = fileTwinsUtils.compareFiles();
         resultMap.forEach((compareFile1, compareFile2) -> {
             final List<String> twins = new ArrayList<>();
             twins.add(compareFile1.getAbsPath());
@@ -69,9 +67,9 @@ public class TwinJPanel extends JPanel {
         });
         final List<List<JLabel>> labels = new ArrayList<>();
         for (List<String> list : result) {
-            List<JLabel> groupeTwinsLabels = new ArrayList<>();
+            final List<JLabel> groupeTwinsLabels = new ArrayList<>();
             list.forEach(s -> {
-                JLabel label = new JLabel();
+                final JLabel label = new JLabel();
                 label.setText(s);
                 groupeTwinsLabels.add(label);
             });
@@ -85,7 +83,7 @@ public class TwinJPanel extends JPanel {
         resultView(labels, null, 0);
     }
 
-    public static void resultView(List<List<JLabel>> labelListFull, JFrame previouseFrame, int offset) {
+    public static void resultView(final List<List<JLabel>> labelListFull, final JFrame previouseFrame, final int offset) {
         if (previouseFrame != null){
             previouseFrame.dispose();
         }

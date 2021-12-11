@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public final class FileTwinsUtils {
     private static final Logger logger = Logger.getLogger("logger");
-    private final File root1;// = new File("C:\\Users\\pavel.novoselov");
+    private final File root1;
     private final File root2;
     private final List<CompareFile> fileList1;
     private final List<CompareFile> fileList2;
@@ -33,7 +33,7 @@ public final class FileTwinsUtils {
         if (rootFile == null) {
             return new ArrayList<>();
         }
-        if (resultList == null){
+        if (resultList == null) {
             resultList = new ArrayList<>();
         }
         if (rootFile.isDirectory()) {
@@ -57,14 +57,14 @@ public final class FileTwinsUtils {
     public Map<CompareFile, List<CompareFile>> compareFiles() {
         final List<CompareFile> first = new ArrayList<>(fileList1);
         final List<CompareFile> second = new ArrayList<>(fileList2);
-        if (first.isEmpty() || second.isEmpty()){
+        if (first.isEmpty() || second.isEmpty()) {
             return new HashMap<>();
         }
         final Map<CompareFile, List<CompareFile>> result = new HashMap<>();
         for (CompareFile firstCompareFile : first) {
             List<CompareFile> tempList = null;
             for (CompareFile secondCompareFile : second) {
-                if (secondCompareFile == firstCompareFile){
+                if (secondCompareFile == firstCompareFile) {
                     continue;
                 }
                 if (secondCompareFile.equals(firstCompareFile)) {
@@ -77,12 +77,16 @@ public final class FileTwinsUtils {
                 second.removeAll(tempList);
             }
         }
-        logger.info("found " + result.size() + " groupe(s) of dublicates include " + result.values().stream().mapToInt(Collection::size).sum() + " files");
+        logger.info("found " +
+                    result.size() +
+                    " groupe(s) of dublicates include " +
+                    result.values().stream().mapToInt(Collection::size).sum() +
+                    " files");
         return result;
     }
 
-    public static boolean deleteFiles(final String fileName){
-        if(fileName == null || fileName.isEmpty()){
+    public static boolean deleteFile(final String fileName) {
+        if (fileName == null || fileName.isEmpty()) {
             return false;
         }
         final File file = new File(fileName);
@@ -90,17 +94,17 @@ public final class FileTwinsUtils {
         return file.delete();
     }
 
-    public static void showFile(final String name){
-        if (name == null || name.isEmpty()){
+    public static void showFile(final String name) {
+        if (name == null || name.isEmpty()) {
             return;
         }
         ProcessBuilder processBuilder;
         final String os = System.getProperty("os.name");
-        if (os.toLowerCase().contains("win")){
+        if (os.toLowerCase().contains("win")) {
             processBuilder = new ProcessBuilder("cmd.exe", "/c", name);
         } else if (os.toLowerCase().contains("nix") || os.contains("nux")) {
             processBuilder = new ProcessBuilder("/bin/bash", "-c", "xdg-open", name);
-        } else if (os.toLowerCase().contains("mac")){
+        } else if (os.toLowerCase().contains("mac")) {
             processBuilder = new ProcessBuilder("/bin/bash", "-c", "open", name);
         } else {
             return;
@@ -145,7 +149,7 @@ public final class FileTwinsUtils {
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null){
+            if (obj == null) {
                 return false;
             }
             return obj instanceof CompareFile

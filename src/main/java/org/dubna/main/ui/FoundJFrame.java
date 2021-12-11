@@ -2,7 +2,9 @@ package org.dubna.main.ui;
 
 import javax.swing.*;
 
-public class FoundJFrame extends JFrame {
+public final class FoundJFrame extends JFrame {
+    private static final long serialVersionUID = 9056634724571813891L;
+
     public FoundJFrame() {
         this.setSize(1200, 700);
         this.setResizable(true);
